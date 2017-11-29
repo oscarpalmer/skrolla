@@ -5,12 +5,14 @@
     "url":   "https://oscar.pm"
   },
   "description": "A tiny plugin for scrolling to specific places on a page.",
+  "files": ["src/skrolla.js"],
   "homepage": "https://github.com/oscarpalmer/skrolla",
   "license": "MIT",
+  "main": "src/skrolla.js",
   "name": "skrolla",
   "repository": {
     "type": "git",
     "url":  "https://github.com/oscarpalmer/skrolla.git"
   },
-  "version": "0.1.0"
+  "version": "0.2.0"
 }
