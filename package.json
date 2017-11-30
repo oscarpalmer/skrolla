@@ -14,9 +14,12 @@
     "gulp-babel":           "^7.0.0",
     "gulp-eslint":          "^4.0.0",
     "gulp-rename":          "^1.2.2",
-    "pump":                 "^1.0.3"
+    "gulp-uglify":          "^3.0.0",
+    "pump":                 "^1.0.3",
+    "uglify-es":            "^3.2.0"
   },
   "files": [
+    "dist/skrolla.js",
     "dist/skrolla.babel.js",
     "src/skrolla.js"
   ],
@@ -27,11 +30,11 @@
     "animation"
   ],
   "license": "MIT",
-  "main": "src/skrolla.js",
+  "main": "dist/skrolla.js",
   "name": "skrolla",
   "repository": {
     "type": "git",
     "url":  "https://github.com/oscarpalmer/skrolla.git"
   },
-  "version": "0.3.0"
+  "version": "0.4.0"
 }
