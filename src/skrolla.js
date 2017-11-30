@@ -1,12 +1,12 @@
 ((scope) => {
   const
-  doc  = scope.document,
-  one  = 1,
-  zero = 0,
+  doc = scope.document,
+  ceiling = Math.ceil,
+  powerOf = Math.pow,
   objectPrototype = Object.prototype,
   options = {
-    "callback": null,
-    "offset": 0
+    callback: null,
+    offset: 0
   },
 
   addListeners = () => {
@@ -20,13 +20,13 @@
 
   easing = (time) => {
     if ((time *= 2) < 1) {
-      return .5 * time ** 3;
-    } else {
-      return .5 * ((time -= 2) * time ** 2 + 2);
+      return .5 * powerOf(time, 3);
     }
+
+    return .5 * ((time -= 2) * powerOf(time, 2) + 2);
   },
 
-  getDuration = (distance) => Math.ceil(distance < one ? -distance : distance),
+  getDuration = (distance) => ceiling(distance < 1 ? -distance : distance),
 
   getElement = (target) => doc.getElementById(target) || doc.body,
 
@@ -45,7 +45,7 @@
 
     const
     {target} = event,
-    targetId = target.dataset.skrolla;
+    targetId = target.getAttribute("data-skrolla");
 
     skrollTo(targetId, target);
   },
@@ -82,12 +82,12 @@
       elapsed  = time - start,
       distance = offset * easing(elapsed / duration);
 
-      scope.scrollTo(zero, page + distance);
+      scope.scrollTo(0, page + distance);
 
       if (elapsed < duration) {
         scope.requestAnimationFrame(loop);
       } else {
-        scope.scrollTo(zero, page + offset);
+        scope.scrollTo(0, page + offset);
         if (skrollaCallback) {
           options.callback.call(element, element, origin);
         }
