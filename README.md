@@ -14,8 +14,8 @@ _Skrolla_ uses a few things introduced in later version of [ECMAScript](//en.wik
 
 ## To-do
 
-1. Comments
-2. Docs & demo
+1. Docs & demo
+2. More easings?
 
 ## License
 
