@@ -1,42 +1,36 @@
-const
-gulp     = require("gulp"),
-babel    = require("gulp-babel"),
-composer = require("gulp-uglify/composer"),
-eslint   = require("gulp-eslint"),
-rename   = require("gulp-rename"),
-pump     = require("pump"),
-uglify   = require("uglify-es"),
+const gulp = require('gulp');
+const babel = require('gulp-babel');
+const composer = require('gulp-uglify/composer');
+const eslint = require('gulp-eslint');
+const rename = require('gulp-rename');
+const uglify = require('uglify-es');
 
 //  Uglify + ES6+
-minify   = composer(uglify, console);
+const minify = composer(uglify, console);
 
 //  Task for finding errors and problems in Skrolla
-gulp.task("eslint", () => {
-  pump([
-    gulp.src("src/skrolla.js"),
-    eslint(),
-    eslint.format(),
-    eslint.failAfterError()
-  ]);
+gulp.task('eslint', () => {
+  return gulp.src('src/skrolla.js')
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
-//  Task for running Skrolla through Babel,
+//  Task for running Skrolla through Babel
+//  after successfully linting the source file,
 //  and then minifying it
-gulp.task("babel", () => {
-  pump([
-    gulp.src("src/skrolla.js"),
-    babel({ presets: ["env"] }),
-    minify(),
-    rename("skrolla.babel.js"),
-    gulp.dest("dist")
-  ]);
+gulp.task('babel', ['eslint'], () => {
+  return gulp.src('src/skrolla.js')
+    .pipe(babel({ presets: ['env'] }))
+    .pipe(minify())
+    .pipe(rename('skrolla.babel.js'))
+    .pipe(gulp.dest('dist'));
 });
 
-//  Task for minifying Skrolla
-gulp.task("minify", () => {
-  pump([
-    gulp.src("src/skrolla.js"),
-    minify(),
-    gulp.dest("dist")
-  ]);
+//  Task for minifying Skrolla after
+//  successfully linting the source file
+gulp.task('minify', ['eslint'], () => {
+  return gulp.src('src/skrolla.js')
+    .pipe(minify())
+    .pipe(gulp.dest('dist'));
 });

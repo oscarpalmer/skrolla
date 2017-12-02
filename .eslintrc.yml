@@ -2,8 +2,5 @@ env:
   browser: true
   es6: true
 extends:
-  - "eslint:recommended"
-  - "google"
-presets:
-  es2015: true
-  stage-2: true
+  - 'eslint:recommended'
+  - 'google'

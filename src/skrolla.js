@@ -1,37 +1,32 @@
 ((scope) => {
-
-  const
   //  Document for 'scope'
-  doc = scope.document,
+  const doc = scope.document;
 
   //  References for smarter math functions
-  ceiling = Math.ceil,
-  powerOf = Math.pow,
+  const ceiling = Math.ceil;
+  const powerOf = Math.pow;
 
   //  Reference for smarter object functions
-  objectPrototype = Object.prototype,
+  const objectPrototype = Object.prototype;
 
   //  Options for Skrolla
-  options = {
+  const options = {
     callback: null,
-    offset: 0
-  },
+    offset: 0,
+  };
 
   /**
    *  Add listeners to the appropriate elements.
    */
-  addListeners = () => {
-
-    const
+  const addListeners = () => {
     //  Elements that are Skrolla-friendly
-    elements = doc.querySelectorAll("[data-skrolla]");
+    const elements = doc.querySelectorAll('[data-skrolla]');
 
     //  Add an event listener for each element
     Array.prototype.forEach.call(elements, (element) => {
-      element.addEventListener("click", onClick);
+      element.addEventListener('click', onClick);
     });
-
-  },
+  };
 
   /**
    *  easeInOutQuad-easing function for nice animations.
@@ -41,13 +36,13 @@
    *  @param  {Float} time - Value for calculations
    *  @return {Float}        Calculated value
    */
-  easing = (time) => {
+  const easing = (time) => {
     if ((time *= 2) < 1) {
       return .5 * powerOf(time, 3);
     }
 
     return .5 * ((time -= 2) * powerOf(time, 2) + 2);
-  },
+  };
 
   /**
    *  Get the duration for a single animation.
@@ -60,7 +55,9 @@
    *  @param  {Number} distance - Distance to scroll
    *  @return {Number}            Duration of scroll
    */
-  getDuration = (distance) => ceiling(distance < 1 ? -distance : distance),
+  const getDuration = (distance) => {
+    return ceiling(distance < 1 ? -distance : distance);
+  };
 
   /**
    *  Get an element based on an ID,
@@ -69,7 +66,7 @@
    *  @param  {String}  id - ID for element
    *  @return {Element}      Found element
    */
-  getElement = (id) => doc.getElementById(id) || doc.body,
+  const getElement = (id) => doc.getElementById(id) || doc.body;
 
   /**
    *  Get the offset value of an element.
@@ -77,7 +74,9 @@
    *  @param  {Element} element - Element to inspect
    *  @return {Number}            Offset value
    */
-  getOffset = (element) => element.getBoundingClientRect().top - options.offset,
+  const getOffset = (element) => {
+    return element.getBoundingClientRect().top - options.offset;
+  };
 
   /**
    *  Get the target element for a specific scroll.
@@ -85,8 +84,7 @@
    *  @param  {Element|String} target - ID for, or an actual element
    *  @return {Element}                 Found element
    */
-  getTarget = (target) => {
-
+  const getTarget = (target) => {
     //  The target is already an element,
     //  so let's just return it
     if (target.nodeType) {
@@ -95,40 +93,36 @@
 
     //  Call 'getElement' if it's a string and return its value,
     //  or return the document body if the target is invalid
-    return typeof target === "string" ? getElement(target) : doc.body;
-
-  },
+    return typeof target === 'string' ? getElement(target) : doc.body;
+  };
 
   /**
    *  The handler for click events added to elements in 'addListeners'.
    *
    *  @param {Event} event - Event details for a unique element
    */
-  onClick = (event) => {
-
+  const onClick = (event) => {
     //  Prevent unneseccary events, like those for anchors
     event.preventDefault();
 
-    const
     //  Get the target of the event
-    {target} = event,
+    const {target} = event;
 
     //  Get the value of the 'data-skrolla'-attribute on the target
-    targetId = target.getAttribute("data-skrolla");
+    const targetId = target.getAttribute('data-skrolla');
 
     //  Call 'scrollTo' with both the targeted value and the event target
     skrollTo(targetId, target);
-  },
+  };
 
   /**
    *  Override the default options with ones supplied by the user.
    *
    *  @param {Object} object - Object of options
    */
-  setOptions = (object) => {
-
+  const setOptions = (object) => {
     //  Bad options, so let's not do anything with it
-    if (objectPrototype.toString.call(object) !== "[object Object]") {
+    if (objectPrototype.toString.call(object) !== '[object Object]') {
       return;
     }
 
@@ -140,11 +134,10 @@
     }
 
     //  If the user added a 'callback', we'll tell Skrolla about it
-    if (typeof options.callback === "function") {
+    if (typeof options.callback === 'function') {
       skrollaCallback = true;
     }
-
-  },
+  };
 
   /**
    *  The actual scrolling function for Skrolla.
@@ -154,76 +147,65 @@
    *  @param {Element|String} target - ID for, or element to scroll to
    *  @param {Element|Window} origin - Origin element or 'window'
    */
-  skrollTo = (target, origin) => {
-
-    const
+  const skrollTo = (target, origin) => {
     //  Offset for the page
-    page     = scope.pageYOffset,
+    const page = scope.pageYOffset;
 
     //  Target element for the scroll
-    element  = getTarget(target),
+    const element = getTarget(target);
 
     //  Offset for the target element
-    offset   = getOffset(element),
+    const offset = getOffset(element);
 
     //  Duration for the scroll
-    duration = getDuration(offset),
+    const duration = getDuration(offset);
 
     /**
      *  Looped function for the scroll.
      *
      *  @param {Float} time - Current time
      */
-    loop = (time)  => {
-
+    const loop = (time) => {
       //  First loop? Set the starting time
       if (start === null) {
         start = time;
       }
 
-      const
       //  Elapsed time for the animation
-      elapsed  = time - start,
+      const elapsed = time - start;
 
       //  Distance to cover during this incremental scroll
-      distance = offset * easing(elapsed / duration);
+      const distance = offset * easing(elapsed / duration);
 
       //  Scroll to a specific position
       scope.scrollTo(0, page + distance);
 
       if (elapsed < duration) {
-
         //  Animation and scrolling hasn't finished,
         //  so let's call rFA to work its magic again
         scope.requestAnimationFrame(loop);
-
       } else {
-
         //  If the user added a callback, we'll call
         //  it now that the scrolling has finished
         if (skrollaCallback) {
           options.callback.call(element, element, origin);
         }
-
       }
     };
 
-    let
     //  Start value for the animation,
     //  to be overriden with the start of the first loop
-    start = null;
+    let start = null;
 
     //  Call rFA with our 'loop'-function
     scope.requestAnimationFrame(loop);
   };
 
-  let
-
   //  Skrolla is not active by default.
-  skrollaActive = false,
+  let skrollaActive = false;
 
   //  Skrolla does not have a callback by default.
-  skrollaCallback = false;
+  let skrollaCallback = false;
 
   /**
    *  Global method to activate Skrolla.
@@ -231,7 +213,6 @@
    *  @param {Object} userOptions - Options supplied by the user
    */
   scope.skrolla = (userOptions) => {
-
     //  If Skrolla is already active,
     //  it should not be possible to active it again
     if (skrollaActive) {
@@ -246,7 +227,6 @@
 
     //  Add event listeners to appropriate elements
     addListeners();
-
   };
 
   /**
@@ -255,9 +235,7 @@
    *  @param {Element|String} target - ID for, or an existing element
    */
   scope.skrolla.to = (target) => {
-
     //  Call 'skrollTo' with the target and 'scope' as parameters
     skrollTo(target, scope);
-
   };
 })(window);
