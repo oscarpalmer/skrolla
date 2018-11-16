@@ -6,7 +6,8 @@
   const ceiling = Math.ceil;
   const powerOf = Math.pow;
 
-  //  Reference for smarter object functions
+  //  Reference for smarter array and object functions
+  const arrayPrototype = Array.prototype;
   const objectPrototype = Object.prototype;
 
   //  Options for Skrolla
@@ -38,10 +39,10 @@
    */
   const easing = (time) => {
     if ((time *= 2) < 1) {
-      return .5 * powerOf(time, 3);
+      return 0.5 * powerOf(time, 3);
     }
 
-    return .5 * ((time -= 2) * powerOf(time, 2) + 2);
+    return 0.5 * ((time -= 2) * powerOf(time, 2) + 2);
   };
 
   /**
@@ -55,9 +56,7 @@
    *  @param  {Number} distance - Distance to scroll
    *  @return {Number}            Duration of scroll
    */
-  const getDuration = (distance) => {
-    return ceiling(distance < 1 ? -distance : distance);
-  };
+  const getDuration = distance => ceiling(distance < 1 ? -distance : distance);
 
   /**
    *  Get an element based on an ID,
@@ -66,7 +65,7 @@
    *  @param  {String}  id - ID for element
    *  @return {Element}      Found element
    */
-  const getElement = (id) => doc.getElementById(id) || doc.body;
+  const getElement = id => doc.getElementById(id) || doc.body;
 
   /**
    *  Get the offset value of an element.
@@ -74,9 +73,7 @@
    *  @param  {Element} element - Element to inspect
    *  @return {Number}            Offset value
    */
-  const getOffset = (element) => {
-    return element.getBoundingClientRect().top - options.offset;
-  };
+  const getOffset = element => element.getBoundingClientRect().top - options.offset;
 
   /**
    *  Get the target element for a specific scroll.
@@ -106,7 +103,7 @@
     event.preventDefault();
 
     //  Get the target of the event
-    const {target} = event;
+    const { target } = event;
 
     //  Get the value of the 'data-skrolla'-attribute on the target
     const targetId = target.getAttribute('data-skrolla');
@@ -127,11 +124,9 @@
     }
 
     //  For each option, override its counterpart in the default options
-    for (const property in object) {
-      if (objectPrototype.hasOwnProperty.call(object, property)) {
-        options[property] = object[property];
-      }
-    }
+    arrayPrototype.forEach.call(Object.keys(object), (key) => {
+      options[key] = object[key];
+    });
 
     //  If the user added a 'callback', we'll tell Skrolla about it
     if (typeof options.callback === 'function') {
@@ -183,14 +178,16 @@
       if (elapsed < duration) {
         //  Animation and scrolling hasn't finished,
         //  so let's call rFA to work its magic again
-        scope.requestAnimationFrame(loop);
-      } else {
-        //  If the user added a callback, we'll call
-        //  it now that the scrolling has finished
-        if (skrollaCallback) {
-          options.callback.call(element, element, origin);
-        }
+        return scope.requestAnimationFrame(loop);
       }
+
+      if (skrollaCallback) {
+      //  If the user added a callback, we'll call
+      //  it now that the scrolling has finished
+        return options.callback.call(element, element, origin);
+      }
+
+      return null;
     };
 
     //  Start value for the animation,
