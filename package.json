@@ -1,28 +1,22 @@
 {
   "author": {
     "email": "opalmer@me.com",
-    "name":  "Oscar Palmér",
-    "url":   "https://oscar.pm"
+    "name": "Oscar Palmér",
+    "url": "https://oscar.pm"
   },
   "babel": {
     "presets": ["@babel/preset-env"]
   },
   "description": "A tiny plugin for scrolling to specific places on a page.",
   "devDependencies": {
-    "@babel/core":            "7.1.x",
-    "@babel/preset-env":      "7.1.x",
-    "eslint":                 "5.9.x",
-    "eslint-config-airbnb":   "17.1.x",
-    "eslint-plugin-import":   "2.14.x",
-    "eslint-plugin-jsx-a11y": "6.1.x",
-    "eslint-plugin-react":    "7.11.x",
-    "gulp":                   "3.9.x",
-    "gulp-babel":             "8.0.x",
-    "gulp-eslint":            "5.0.x",
-    "gulp-rename":            "1.4.x",
-    "gulp-uglify":            "3.0.x",
-    "pump":                   "3.0.x",
-    "uglify-es":              "3.3.x"
+    "@babel/cli": "^7.4.0",
+    "@babel/core": "^7.5.x",
+    "@babel/preset-env": "^7.5.x",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-plugin-import": "^2.18.0",
+    "terser": "^4.1.0",
+    "uglify-js": "^3.6.0"
   },
   "files": [
     "dist/skrolla.js"
@@ -38,7 +32,14 @@
   "name": "skrolla",
   "repository": {
     "type": "git",
-    "url":  "https://github.com/oscarpalmer/skrolla.git"
+    "url": "https://github.com/oscarpalmer/skrolla.git"
   },
-  "version": "0.7.0"
+  "scripts": {
+    "babel": "yarn babel:build && yarn babel:minify",
+    "babel:build": "babel src/skrolla.js --out-file dist/skrolla.babel.js",
+    "babel:minify": "uglifyjs dist/skrolla.babel.js -o dist/skrolla.babel.js -c -m --comments",
+    "build": "yarn minify && yarn babel",
+    "minify": "terser src/skrolla.js -o dist/skrolla.js -c -m --comments"
+  },
+  "version": "0.8.0"
 }
